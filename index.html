@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Blog · Butterfly Lite</title>
+  <meta name="description" content="一个用 <div> 添加文章的仿 Butterfly 单文件博客" />
+  <style>
+    /* ========== 主题变量（仿 Butterfly 气质） ========== */
+    :root{
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --brand: #8a2be2; /* butterfly 紫 */
+      --brand-weak:#a56cf0;
+      --border: #e5e7eb;
+      --chip:#eef2ff;
+      --shadow: 0 10px 30px rgba(17, 24, 39, .08);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --radius-lg: 28px;
+      --cover-gradient: linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.6));
+    }
+    .dark{
+      --bg: #0b0d13;
+      --panel: #0f1220;
+      --text: #e5e7eb;
+      --muted: #9aa0aa;
+      --brand: #a78bfa;
+      --brand-weak:#c4b5fd;
+      --border: #1f2433;
+      --chip:#151a2e;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --cover-gradient: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.75));
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, PingFang SC, Noto Sans SC, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg); color: var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+
+    /* ========== 顶部公告 & 统计 ========== */
+    .announce{
+      position:sticky; top:0; z-index:40; backdrop-filter:saturate(1.2) blur(6px);
+      background: color-mix(in oklab, var(--panel) 88%, transparent);
+      border-bottom:1px solid var(--border);
+      padding:10px 16px; display:flex; gap:12px; align-items:center; justify-content:space-between;
+    }
+    .announce .left{display:flex; gap:10px; align-items:center}
+    .badge{padding:4px 10px; background:var(--chip); border:1px solid var(--border); border-radius:999px; font-size:12px}
+    .muted{color: var(--muted)}
+
+    /* ========== 全屏首屏（只显示标题） ========== */
+    .hero{
+      position:relative; height:100vh; display:grid; place-items:center; overflow:hidden;
+      background: #0b1020;
+      color:#fff;
+    }
+    .hero::before{
+      content:""; position:absolute; inset:0; background: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; filter: brightness(.65);
+    }
+    .hero::after{content:""; position:absolute; inset:0; background: var(--cover-gradient)}
+    .hero-inner{position:relative; z-index:2; text-align:center; padding:24px}
+    .site-title{font-weight:800; letter-spacing:.5px; font-size: clamp(38px, 6vw, 72px)}
+    .site-sub{margin-top:8px; font-size: clamp(14px, 2vw, 18px); opacity:.9}
+    .hero-actions{margin-top:28px; display:flex; gap:12px; justify-content:center}
+    .btn{
+      padding:10px 16px; border-radius:999px; border:1px solid color-mix(in oklab, var(--panel) 40%, transparent);
+      background: color-mix(in oklab, var(--panel) 10%, transparent); color:#fff; cursor:pointer;
+    }
+
+    /* ========== 导航 & 搜索 ========== */
+    .nav{max-width:1100px; margin:-48px auto 24px; padding:0 16px; position:relative; z-index:5}
+    .nav-bar{display:flex; gap:12px; align-items:center; background:var(--panel); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding:12px}
+    .nav .search{flex:1; display:flex; align-items:center; gap:8px; padding:10px 12px; background: color-mix(in oklab, var(--bg) 70%, transparent); border:1px solid var(--border); border-radius:12px}
+    .nav input{flex:1; background:transparent; border:none; outline:none; color:var(--text)}
+    .nav .filters{display:flex; flex-wrap:wrap; gap:8px}
+    .chip{padding:6px 10px; border-radius:999px; background:var(--chip); border:1px solid var(--border); cursor:pointer; font-size:12px}
+    .chip.active{outline:2px solid var(--brand); background: color-mix(in oklab, var(--chip) 70%, transparent)}
+    .right-actions{margin-left:auto; display:flex; gap:8px}
+    .toggle{padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:var(--panel); cursor:pointer}
+
+    /* ========== 布局 & 卡片 ========== */
+    .wrap{max-width:1100px; margin:0 auto; padding:0 16px 80px}
+    .grid{display:grid; gap:18px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));}
+
+    .card{display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden}
+    .cover{position:relative; aspect-ratio: 16/9; background:#111}
+    .cover img{width:100%; height:100%; object-fit:cover}
+    .cover .tagbar{position:absolute; left:12px; bottom:12px; display:flex; gap:6px; flex-wrap:wrap}
+    .tag{font-size:12px; padding:4px 8px; border-radius:999px; background: color-mix(in oklab, var(--brand) 20%, var(--panel)); border:1px solid var(--border); color:#fff; backdrop-filter: blur(4px)}
+    .card-body{padding:14px 14px 10px}
+    .title{font-weight:700; font-size:18px; line-height:1.35}
+    .meta{margin-top:6px; font-size:12px; color:var(--muted)}
+    .excerpt{margin-top:10px; color:var(--muted)}
+    .card-foot{display:flex; align-items:center; justify-content:space-between; padding:10px 14px 14px}
+    .readbtn{padding:8px 12px; border-radius:10px; border:1px solid var(--border); background: color-mix(in oklab, var(--panel) 60%, transparent); cursor:pointer}
+
+    /* ========== 文章弹窗 ========== */
+    dialog.article{width:min(880px, 96vw); border:none; padding:0; border-radius: var(--radius-lg); overflow:hidden; background:var(--panel); color:var(--text); box-shadow: var(--shadow)}
+    .dlg-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; border-bottom:1px solid var(--border)}
+    .dlg-body{padding:18px}
+    .dlg-body .content img{max-width:100%; border-radius:12px}
+
+    /* ========== 页脚 ========== */
+    footer{padding:28px 16px; text-align:center; color:var(--muted)}
+
+    /* 小屏优化 */
+    @media (max-width:640px){ .nav{margin:-32px auto 16px} .nav-bar{flex-wrap:wrap} .right-actions{width:100%; justify-content:flex-end} }
+  </style>
+</head>
+<body>
+  <!-- 顶部公告 & 站点统计 -->
+  <div class="announce">
+    <div class="left">
+      <span class="badge">公告</span> <span>this is my blog</span>
+    </div>
+    <div class="right">
+      <span class="badge" id="stat-posts">0 篇文章</span>
+      <span class="badge" id="stat-cates">0 分类</span>
+      <span class="badge" id="stat-tags">0 标签</span>
+      <span class="badge" id="stat-words">0 字</span>
+    </div>
+  </div>
+
+  <!-- 全屏首屏：只显示标题（下滑进入博客） -->
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <div class="site-title">My Blog · 效听的精神家园</div>
+      <div class="site-sub">一个人的小茧房</div>
+      <div class="hero-actions">
+        <a class="btn" href="#main">进入博客</a>
+        <button class="btn" id="toggle-theme">切换主题</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 导航：搜索、分类、主题按钮 -->
+  <div class="nav" id="main">
+    <div class="nav-bar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/></svg>
+        <input id="search" placeholder="搜索文章标题 / 标签 / 摘要... (Ctrl+/)" />
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="right-actions">
+        <button class="toggle" id="theme2">🌗</button>
+        <button class="toggle" id="backTop">↑ 顶部</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 卡片网格渲染区 -->
+  <main class="wrap">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- 文章弹窗 -->
+  <dialog class="article" id="dlg">
+    <div class="dlg-head">
+      <div>
+        <div class="title" id="dlg-title"></div>
+        <div class="meta" id="dlg-meta"></div>
+      </div>
+      <button class="toggle" onclick="document.getElementById('dlg').close()">关闭</button>
+    </div>
+    <div class="dlg-body">
+      <div class="content" id="dlg-content"></div>
+    </div>
+  </dialog>
+
+  <!-- ========= 用 <div class="post"> 添加文章（只需复制粘贴） =========
+    规则：
+    1) 每篇文章一个 <div class="post">，仅修改 data-* 属性与内部 .content。
+    2) data-tags 用英文逗号分隔多个标签。
+    3) 封面图非必填；不填则使用渐变占位。
+    4) 不需要改动 JS，只管加这个模块即可。
+  -->
+  <section id="posts" style="display:none">
+
+    <!-- 示例文章 1：欢迎使用 -->
+    <div class="post"
+         data-id="welcome"
+         data-title="博客搭建大成功！"
+         data-date="2025-08-18"
+         data-category="开心心"
+         data-tags="个人网页,博客"
+         data-cover="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop"
+         data-excerpt="搭建博客大成功！！！ 看同学的写的教程，熬了一个大夜，还是没搞定 第二天下午继续搞，但是碰上了个奇怪的问题，又搞了很久 最后终于通过咨询同学和看各种教程搞定啦，成功搭建 快乐...">
+      <div class="content">
+        <p>搭建博客大成功！！！</p>
+        <ol>
+        <p>看别人的写的教程，熬了一个大夜，还是没搞定</li>
+        <p>第二天下午继续搞，但是碰上了个奇怪的问题，又搞了很久</li>
+        <p>最后终于通过咨询同学和看各种教程搞定啦，成功搭建</li>
+        </ol>
+        <p>快乐，兴奋</p>
+        <p>希望以后能多写文章发到这里</p>
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop" alt="demo"/>
+      </div>
+    </div>
+
+    <!-- 你可以在此处继续粘贴更多 <div class="post"> ... -->
+
+  </section>
+
+  <footer>
+    © <span id="year"></span> · by xiaoting · Powered by Butterfly Lite
+  </footer>
+
+  <script>
+    // ========== 基础工具 ==========
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    // ========== 主题切换 ==========
+    const applyTheme = (t) => { document.documentElement.classList.toggle('dark', t==='dark'); localStorage.setItem('theme', t); }
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(localStorage.getItem('theme') || (preferDark? 'dark':'light'));
+    $('#toggle-theme').onclick = () => applyTheme(document.documentElement.classList.contains('dark')? 'light':'dark');
+    $('#theme2').onclick = () => $('#toggle-theme').click();
+
+    // ========== 读取 <div class="post"> 构造成数据 ==========
+    const rawPosts = $$('#posts .post').map(p=>({
+      id: p.dataset.id?.trim() || crypto.randomUUID(),
+      title: p.dataset.title?.trim() || '未命名文章',
+      date: p.dataset.date?.trim() || new Date().toISOString().slice(0,10),
+      category: p.dataset.category?.trim() || '未分类',
+      tags: (p.dataset.tags||'').split(',').map(s=>s.trim()).filter(Boolean),
+      cover: p.dataset.cover?.trim() || '',
+      excerpt: p.dataset.excerpt?.trim() || '',
+      html: $('.content', p)?.innerHTML || ''
+    })).sort((a,b)=> b.date.localeCompare(a.date));
+
+    // ========== 站点统计 ==========
+    const stat = {
+      posts: rawPosts.length,
+      cates: new Set(rawPosts.map(p=>p.category)).size,
+      tags: new Set(rawPosts.flatMap(p=>p.tags)).size,
+      words: rawPosts.reduce((n,p)=> n + p.html.replace(/<[^>]+>/g,'').trim().length, 0)
+    };
+    $('#stat-posts').textContent = stat.posts + ' 篇文章';
+    $('#stat-cates').textContent = stat.cates + ' 分类';
+    $('#stat-tags').textContent = stat.tags + ' 标签';
+    $('#stat-words').textContent = stat.words + ' 字';
+
+    // ========== 渲染标签筛选 ==========
+    const allCates = [...new Set(rawPosts.map(p=>p.category))];
+    const allTags = [...new Set(rawPosts.flatMap(p=>p.tags))];
+    const filters = $('#filters');
+    const chips = [];
+    function addChip(label, type){
+      const el = document.createElement('button');
+      el.className = 'chip'; el.textContent = label; el.dataset.type = type; el.dataset.value = label;
+      el.onclick = ()=>{ el.classList.toggle('active'); render(); };
+      filters.appendChild(el); chips.push(el);
+    }
+    addChip('全部','all');
+    allCates.forEach(c=> addChip(c,'cate'));
+    allTags.forEach(t=> addChip('#'+t,'tag'));
+
+    // ========== 搜索快捷键 ==========
+    document.addEventListener('keydown', e=>{ if((e.ctrlKey||e.metaKey)&& e.key === '/'){ e.preventDefault(); $('#search').focus(); }});
+
+    // ========== 渲染卡片 ==========
+    const grid = $('#grid');
+    function cardTpl(p){
+      const tags = p.tags.map(t=>`<span class="tag">#${t}</span>`).join('');
+      const cover = p.cover
+        ? `<img src="${p.cover}" alt="${p.title}" loading="lazy">`
+        : `<div style="width:100%;height:100%;background:radial-gradient(1200px 500px at 0 0, ${getComputedStyle(document.documentElement).getPropertyValue('--brand-weak')}33, transparent);"></div>`;
+      return `
+        <article class="card" data-id="${p.id}">
+          <div class="cover"><div class="tagbar">${tags}</div>${cover}</div>
+          <div class="card-body">
+            <div class="title">${p.title}</div>
+            <div class="meta">${p.date} · ${p.category}</div>
+            <div class="excerpt">${p.excerpt}</div>
+          </div>
+          <div class="card-foot">
+            <button class="readbtn" data-id="${p.id}">阅读</button>
+            <span class="muted">ID: ${p.id}</span>
+          </div>
+        </article>`;
+    }
+
+    function currentFilters(){
+      const act = chips.filter(c=>c.classList.contains('active'));
+      const hasAll = act.some(c=>c.dataset.type==='all');
+      const cate = act.filter(c=>c.dataset.type==='cate').map(c=>c.dataset.value);
+      const tags = act.filter(c=>c.dataset.type==='tag').map(c=>c.dataset.value.slice(1));
+      const kw = $('#search').value.trim().toLowerCase();
+      return {hasAll, cate, tags, kw}
+    }
+
+    function matchPost(p, f){
+      if(!f.hasAll){ if(f.cate.length && !f.cate.includes(p.category)) return false; if(f.tags.length && !p.tags.some(t=>f.tags.includes(t))) return false; }
+      if(f.kw){
+        const s = (p.title + ' ' + p.excerpt + ' ' + p.tags.join(',')).toLowerCase();
+        if(!s.includes(f.kw)) return false;
+      }
+      return true;
+    }
+
+    function render(){
+      const f = currentFilters();
+      const list = rawPosts.filter(p=>matchPost(p,f));
+      grid.innerHTML = list.map(cardTpl).join('');
+    }
+
+    $('#search').addEventListener('input', render);
+    render();
+
+    // ========== 阅读弹窗 ==========
+    grid.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.readbtn'); if(!btn) return;
+      const id = btn.dataset.id;
+      const p = rawPosts.find(x=>x.id===id); if(!p) return;
+      $('#dlg-title').textContent = p.title;
+      $('#dlg-meta').textContent = `${p.date} · ${p.category} · ${p.tags.map(t=>'#'+t).join(' ')}`;
+      $('#dlg-content').innerHTML = p.html;
+      $('#dlg').showModal();
+    });
+
+    // ========== 返回顶部 ==========
+    $('#backTop').onclick = ()=> window.scrollTo({top:0, behavior:'smooth'});
+
+    // ========== 年份 ==========
+    $('#year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
