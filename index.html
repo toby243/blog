@@ -101,9 +101,10 @@
     .readbtn{padding:8px 12px; border-radius:10px; border:1px solid var(--border); background: color-mix(in oklab, var(--panel) 60%, transparent); cursor:pointer}
 
     /* ========== 文章弹窗 ========== */
-    dialog.article{width:min(880px, 96vw); border:none; padding:0; border-radius: var(--radius-lg); overflow:hidden; background:var(--panel); color:var(--text); box-shadow: var(--shadow)}
+    dialog.article{width:min(880px, 96vw); max-height: 90vh; border:none; padding:0; border-radius: var(--radius-lg); display:grid; grid-template-rows:auto 1fr; overflow:hidden; background:var(--panel); color:var(--text); box-shadow: var(--shadow)}
+    @media (max-width:640px){ dialog.article{max-height:100dvh; height:100dvh;} }
     .dlg-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; border-bottom:1px solid var(--border)}
-    .dlg-body{padding:18px}
+    .dlg-body{padding:18px; overflow:auto}
     .dlg-body .content img{max-width:100%; border-radius:12px}
 
     /* ========== 页脚 ========== */
@@ -130,8 +131,8 @@
   <!-- 全屏首屏：只显示标题（下滑进入博客） -->
   <header class="hero" id="top">
     <div class="hero-inner">
-      <div class="site-title">My Blog · 效听的精神家园</div>
-      <div class="site-sub">一个人的小茧房</div>
+      <div class="site-title">My Blog · Butterfly Lite</div>
+      <div class="site-sub">轻量仿 Butterfly · 单文件 · 用 &lt;div&gt; 添加文章</div>
       <div class="hero-actions">
         <a class="btn" href="#main">进入博客</a>
         <button class="btn" id="toggle-theme">切换主题</button>
@@ -187,7 +188,7 @@
          data-id="welcome"
          data-title="博客搭建大成功！"
          data-date="2025-08-18"
-         data-category="开心心"
+         data-category="个人"
          data-tags="个人网页,博客"
          data-cover="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop"
          data-excerpt="搭建博客大成功！！！ 看同学的写的教程，熬了一个大夜，还是没搞定 第二天下午继续搞，但是碰上了个奇怪的问题，又搞了很久 最后终于通过咨询同学和看各种教程搞定啦，成功搭建 快乐...">
@@ -203,6 +204,55 @@
         <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop" alt="demo"/>
       </div>
     </div>
+<!-- 新文章 -->
+<div class="post"
+     data-id="github sign-up"
+     data-title="github注册教程"
+     data-date="2025-08-22"
+     data-category="教程"
+     data-tags="github,注册"
+     data-cover="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop"
+     data-excerpt="一步步教你注册github账号">
+  <div class="content">
+    <h1>GitHub 注册与创建存储库教学</h1>
+
+<h1>一、注册 GitHub 账号</h1>
+<li>准备一个常用邮箱（Gmail、Outlook、QQ 邮箱均可）。</li>
+<li>打开官网：https://github.com ，点击右上角 “Sign up”。</li>
+<li>填写邮箱、密码、用户名，完成拼图验证。</li>
+<li>去邮箱收取验证码，输入到 GitHub 完成验证。</li>
+<li>选择套餐：免费版 Free 即可。</li>
+<li>设置使用偏好，可以跳过。</li>
+<li>注册完成后进入 GitHub 首页。</li>
+
+<h1>二、注册后推荐设置</h1>
+<li>编辑个人资料：点击头像 → Your profile → Edit profile。</li>
+<li>设置 SSH Key，方便免密上传代码。</li>
+<li>开启两步验证（2FA）提升安全性。</li>
+
+<h1>三、常见问题</h1>
+<li>收不到验证邮件 → 检查垃圾邮箱或换个邮箱。</li>
+<li>用户名重复 → 换一个或在后面加数字。</li>
+<li>密码太简单 → 必须包含大小写字母、数字和符号。</li>
+
+<h1>四、创建存储库（Repository）</h1>
+<li>登录 GitHub。</li>
+<li>点击右上角 “+” → 选择 “New repository”。</li>
+<li>填写仓库信息：</li>
+<li>- Repository name：例如 my-first-repo。</li>
+<li>- Description：填写简介（选填）。</li>
+<li>- Visibility：Public（公开）或 Private（私有）。</li>
+<li>- 初始化选项：可勾选 Add a README file。</li>
+<li>点击 “Create repository” 创建。</li>
+
+<h1>五、仓库创建完成后</h1>
+<li>仓库页面地址如：https://github.com/用户名/my-first-repo。</li>
+<li>可以上传文件（Upload files）。</li>
+<li>可以克隆到本地（Clone）。</li>
+<li>可以在线新建文件（Add file → Create new file）。</li>
+    <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?q=80&w=1200&auto=format&fit=crop" alt="测试图片"/>
+  </div>
+</div>
 
     <!-- 你可以在此处继续粘贴更多 <div class="post"> ... -->
 
@@ -324,7 +374,33 @@
       $('#dlg-meta').textContent = `${p.date} · ${p.category} · ${p.tags.map(t=>'#'+t).join(' ')}`;
       $('#dlg-content').innerHTML = p.html;
       $('#dlg').showModal();
+      document.body.style.overflow='hidden';
     });
+
+    // 关闭弹窗时恢复页面滚动
+    // 关闭弹窗时恢复页面滚动
+const dlg = document.getElementById('dlg');
+const dlgCloseBtn = dlg.querySelector('button');
+
+// 点击按钮关闭
+dlgCloseBtn.addEventListener('click', () => {
+  dlg.close();
+  document.body.style.overflow = '';
+});
+
+// 点击遮罩关闭
+dlg.addEventListener('click', (e) => {
+  if (e.target === dlg) {
+    dlg.close();
+    document.body.style.overflow = '';
+  }
+});
+
+// 弹窗关闭事件兜底
+dlg.addEventListener('close', () => {
+  document.body.style.overflow = '';
+});
+
 
     // ========== 返回顶部 ==========
     $('#backTop').onclick = ()=> window.scrollTo({top:0, behavior:'smooth'});
