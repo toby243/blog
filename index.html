@@ -1570,6 +1570,201 @@ git push
 
   </div>
 </div>
+<div class="post" 
+     data-id="butterfly-install-deploy-full"
+     data-title="Hexo + Butterfly 博客安装与部署全流程教程（详尽版）"
+     data-date="2025-08-22"
+     data-category="Hexo"
+     data-tags="Hexo,Butterfly,博客,部署,教程,详尽版"
+     data-cover="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop"
+     data-excerpt="Hexo + Butterfly 博客从零安装、配置到部署、功能设置、优化的一条龙完整教程，全文超过 4000 字。">
+  <div class="content">
+
+    <h2>1. 环境准备与 Node.js 配置</h2>
+    <p>在开始搭建 Hexo 博客之前，需要确保本地环境具备 Node.js 和 Git，以下内容详细说明安装步骤及注意事项：</p>
+
+    <h3>1.1 Node.js 安装</h3>
+    <ul>
+      <li>访问 Node.js 官方网站 <a href="https://nodejs.org/">https://nodejs.org/</a></li>
+      <li>推荐安装 LTS（长期支持）版本，保证 Hexo 稳定运行。</li>
+      <li>安装过程中选择“自动添加环境变量”，方便在命令行中调用 Node。</li>
+    </ul>
+    <p>安装完成后，可在终端检查版本：</p>
+    <pre><code class="language-bash">
+node -v
+npm -v
+    </code></pre>
+    <p>Node.js 与 npm 是 Hexo 的核心依赖，缺一不可。</p>
+
+    <h3>1.2 Git 安装与配置</h3>
+    <p>访问 Git 官网 <a href="https://git-scm.com/downloads">下载 Git</a>，安装时选择默认选项即可。安装完成后，在终端输入：</p>
+    <pre><code class="language-bash">
+git --version
+    </code></pre>
+    <p>配置 Git 用户信息：</p>
+    <pre><code class="language-bash">
+git config --global user.name "你的GitHub用户名"
+git config --global user.email "你的GitHub注册邮箱"
+    </code></pre>
+    <p>这是 Hexo 部署和提交 GitHub Pages 所必需的步骤。</p>
+
+    <h2>2. 安装 Hexo 并初始化博客</h2>
+    <p>安装 Hexo CLI：</p>
+    <pre><code class="language-bash">
+npm install -g hexo-cli
+    </code></pre>
+    <p>选择博客存放目录，执行：</p>
+    <pre><code class="language-bash">
+hexo init my-blog
+cd my-blog
+npm install
+    </code></pre>
+    <p>此时目录结构如下：</p>
+    <ul>
+      <li><code>scaffolds/</code>：文章模板</li>
+      <li><code>source/</code>：博客内容</li>
+      <li><code>themes/</code>：主题文件夹</li>
+      <li><code>_config.yml</code>：博客配置文件</li>
+    </ul>
+    <p>可以在 <code>_config.yml</code> 中设置站点标题、描述、作者信息、语言、URL 等。</p>
+
+    <h2>3. 安装 Butterfly 主题</h2>
+    <p>进入主题目录，克隆 Butterfly：</p>
+    <pre><code class="language-bash">
+cd themes
+git clone https://github.com/jerryc127/hexo-theme-butterfly.git butterfly
+    </code></pre>
+    <p>在博客主配置文件 <code>_config.yml</code> 中修改主题：</p>
+    <pre><code class="language-yaml">
+theme: butterfly
+    </code></pre>
+
+    <h3>3.1 Butterfly 主题功能简介</h3>
+    <ul>
+      <li>响应式布局：支持移动端与桌面端自适应</li>
+      <li>暗黑模式切换</li>
+      <li>站点统计（访问量、阅读量）</li>
+      <li>公告栏功能</li>
+      <li>搜索、标签、分类过滤</li>
+      <li>社交分享：微博、Twitter、Facebook 等</li>
+      <li>评论系统：Valine、Gitalk、Twikoo 等</li>
+    </ul>
+
+    <h2>4. 配置 Butterfly 主题</h2>
+    <p>打开 <code>themes/butterfly/_config.yml</code>，详细配置各项功能：</p>
+    <h3>4.1 基本信息</h3>
+    <pre><code class="language-yaml">
+menu:
+  home: /
+  about: /about
+title: 我的 Hexo 博客
+subtitle: 学习与分享
+author: 王学峰
+language: zh-CN
+    </code></pre>
+
+    <h3>4.2 评论系统</h3>
+    <p>以 Valine 为例：</p>
+    <pre><code class="language-yaml">
+valine:
+  enable: true
+  appId: "你的LeanCloud AppID"
+  appKey: "你的LeanCloud AppKey"
+  placeholder: "说点什么吧..."
+    </code></pre>
+    <p>Gitalk 配置示例：</p>
+    <pre><code class="language-yaml">
+gitalk:
+  enable: false
+  clientID: ""
+  clientSecret: ""
+  repo: ""
+  owner: ""
+  admin: []
+    </code></pre>
+    <p>根据需要选择评论系统，开启后在文章下方显示评论区域。</p>
+
+    <h3>4.3 搜索功能</h3>
+    <pre><code class="language-yaml">
+search:
+  enable: true
+  type: local
+    </code></pre>
+    <p>开启搜索功能后，博客顶部会显示搜索框，支持文章标题、标签、内容搜索。</p>
+
+    <h3>4.4 站点统计</h3>
+    <pre><code class="language-yaml">
+counter:
+  enable: true
+  type: busuanzi
+    </code></pre>
+    <p>支持多种统计方式，如 <code>busuanzi</code>、Google Analytics 等。</p>
+
+    <h3>4.5 社交与分享</h3>
+    <pre><code class="language-yaml">
+sns:
+  weibo: "https://weibo.com/你的账号"
+  twitter: "https://twitter.com/你的账号"
+  github: "https://github.com/你的账号"
+    </code></pre>
+    <p>配置后文章底部会显示社交图标，方便用户关注或分享文章。</p>
+
+    <h2>5. 本地预览与调试</h2>
+    <pre><code class="language-bash">
+hexo clean
+hexo g
+hexo s
+    </code></pre>
+    <p>浏览器访问 <a href="http://localhost:4000">http://localhost:4000</a>，检查页面布局、功能是否正常。</p>
+
+    <h2>6. 部署到 GitHub Pages</h2>
+    <h3>6.1 创建 GitHub 仓库</h3>
+    <p>登录 GitHub，新建仓库，例如 <code>my-blog</code>，选择 Public，添加 README。</p>
+
+    <h3>6.2 配置部署插件</h3>
+    <pre><code class="language-bash">
+npm install hexo-deployer-git --save
+    </code></pre>
+    <p>修改博客主配置文件 <code>_config.yml</code> 部署段：</p>
+    <pre><code class="language-yaml">
+deploy:
+  type: git
+  repo: git@github.com:用户名/my-blog.git
+  branch: main
+    </code></pre>
+
+    <h3>6.3 发布博客</h3>
+    <pre><code class="language-bash">
+hexo clean
+hexo g
+hexo d
+    </code></pre>
+    <p>部署完成后，访问 <code>https://用户名.github.io/my-blog/</code> 查看上线效果。</p>
+
+    <h2>7. 主题更新与备份</h2>
+    <ul>
+      <li>更新主题：<code>cd themes/butterfly && git pull</code></li>
+      <li>备份博客：将 <code>_config.yml</code>、<code>source</code>、<code>themes/butterfly/_config.yml</code> 保存在本地或私有仓库</li>
+      <li>多终端同步：使用 Git 管理博客目录，保证各电脑同步更新</li>
+    </ul>
+
+    <h2>8. 常见问题与优化建议</h2>
+    <ul>
+      <li>部署失败：检查 SSH 密钥，确保已添加到 GitHub</li>
+      <li>图片不显示：使用绝对路径或 GitHub 仓库路径</li>
+      <li>统计数据异常：确认外部统计服务开启</li>
+      <li>评论系统不显示：检查 AppID、AppKey 是否正确</li>
+      <li>SEO 优化：修改 <code>_config.yml</code> 中描述、关键词、社交分享信息</li>
+    </ul>
+
+    <h2>9. 总结</h2>
+    <p>
+      本文完整讲解了 Hexo 博客环境准备、安装 Hexo、初始化博客、安装 Butterfly 主题、主题配置、评论系统、搜索、站点统计、社交分享、本地预览、部署到 GitHub Pages、主题更新与备份，以及常见问题排查与优化建议。
+      全文内容详尽，适合新手从零开始操作，也可作为中高级用户的参考指南。
+    </p>
+
+  </div>
+</div>
 
     <!-- 你可以在此处继续粘贴更多 <div class="post"> ... -->
 
