@@ -206,6 +206,181 @@
     <img src="https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1200&auto=format&fit=crop" alt="庆祝成功"/>
   </div>
 </div>
+<div class="post"
+     data-id="git-install-config"
+     data-title="Git 安装与配置：入门指南"
+     data-date="2025-08-22"
+     data-category="技术笔记"
+     data-tags="Git,GitHub,版本管理,SSH"
+     data-cover="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=1600&auto=format&fit=crop"
+     data-excerpt="一步步带你完成 Git 的安装、配置、SSH 秘钥绑定，以及仓库的克隆、推送和拉取操作。">
+  <div class="content">
+    <h2>Git 是什么？</h2>
+    <p>Git 是一款常用的版本管理软件，在企业生产中用得极其广泛。对于普通用户，用得最多的当然就是 <strong>GitHub</strong> 或者 <strong>Gitee</strong> 仓库的管理啦！</p>
+
+    <h2>安装</h2>
+    <p>前往 <a href="https://git-scm.com/downloads" target="_blank">Git 官方下载页面</a>，选择您的操作系统，下载安装即可。</p>
+
+    <h2>配置</h2>
+    <p>安装完成后，打开 <code>Git Bash</code>，输入以下命令设置 GitHub 账户和邮箱：</p>
+    <pre><code class="language-bash">
+git config --global user.name "你的GitHub用户名"
+git config --global user.email "你的GitHub注册邮箱"
+    </code></pre>
+
+    <p>输入下列命令查看是否设置成功：</p>
+    <pre><code class="language-bash">
+git config user.name
+git config user.email
+    </code></pre>
+
+    <h2>本地仓库与远程仓库</h2>
+    <ul>
+      <li><strong>本地仓库</strong>：存放在电脑本地的文件夹；</li>
+      <li><strong>远程仓库</strong>：存放在 GitHub/Gitee 上的仓库。</li>
+    </ul>
+    <p>利用 Git，可以顺利地将本地仓库推送到远程仓库，或从远程仓库拉取更新，非常便捷。</p>
+
+    <h2>配置 SSH 秘钥</h2>
+    <pre><code class="language-bash">
+ssh-keygen -t rsa -C "你的GitHub注册邮箱"
+    </code></pre>
+    <p>一路回车即可，完成后在 <code>C:\Users\你的用户名\.ssh</code> 找到 <code>id_rsa.pub</code> 文件，将内容复制到 GitHub 的 <em>SSH and GPG keys</em> 页面，添加为新的 SSH key。</p>
+
+    <p>检测是否成功：</p>
+    <pre><code class="language-bash">
+ssh git@github.com
+    </code></pre>
+    <p>若出现 <code>successfully</code>，说明绑定完成。</p>
+
+    <h2>仓库克隆</h2>
+    <p>在目标文件夹中打开 Git Bash，输入：</p>
+    <pre><code class="language-bash">
+git clone git@github.com:用户名/仓库名.git
+    </code></pre>
+    <p>即可将远程仓库完整下载到本地。</p>
+
+    <h2>仓库推送</h2>
+    <ol>
+      <li>在 GitHub 创建一个新仓库（可选择是否添加 README）。</li>
+      <li>在本地初始化并提交代码：</li>
+    </ol>
+    <pre><code class="language-bash">
+git init
+git add .
+git commit -m "首次提交"
+git push
+    </code></pre>
+
+    <h2>仓库拉取</h2>
+    <p>当远程仓库被修改后，本地需要同步更新：</p>
+    <pre><code class="language-bash">
+git pull
+    </code></pre>
+    <p>这样本地与远程就保持一致，避免推送冲突。</p>
+
+    <h2>总结</h2>
+    <p>通过本教程，你已经掌握了 Git 的最基本操作：安装、配置、SSH 秘钥、仓库克隆、推送与拉取。</p>
+    <p>未来你可能会需要更多分支管理和协作的技巧，那时可以继续学习进阶的 Git 知识。</p>
+  </div>
+</div>
+<div class="post"
+     data-id="git-branch-advanced"
+     data-title="Git 分支与协作：进阶指南"
+     data-date="2025-08-22"
+     data-category="技术笔记"
+     data-tags="Git,分支,协作,版本管理,GitHub"
+     data-cover="https://images.unsplash.com/photo-1581091215367-59ab6a9a1f3e?q=80&w=1600&auto=format&fit=crop"
+     data-excerpt="学习如何使用 Git 分支进行多人协作开发，掌握常见的分支操作、冲突解决和协作流程。">
+  <div class="content">
+    <h2>为什么需要分支？</h2>
+    <p>在团队开发中，每个人可能会同时开发不同的功能。如果大家直接在主分支 (<code>main</code>) 上提交，容易造成冲突和混乱。</p>
+    <p><strong>分支</strong> 就像是复制一份主线代码，你可以在分支上自由修改，完成后再合并回主线。</p>
+
+    <h2>常用分支命令</h2>
+    <pre><code class="language-bash">
+# 查看所有分支
+git branch
+
+# 创建新分支
+git branch feature-login
+
+# 切换到新分支
+git checkout feature-login
+
+# 创建并切换
+git checkout -b feature-login
+
+# 删除本地分支
+git branch -d feature-login
+    </code></pre>
+
+    <h2>推送与远程分支</h2>
+    <pre><code class="language-bash">
+# 推送本地分支到远程
+git push -u origin feature-login
+
+# 拉取远程分支
+git checkout -b feature-login origin/feature-login
+    </code></pre>
+
+    <h2>分支合并</h2>
+    <p>完成开发后，将功能分支合并到主分支：</p>
+    <pre><code class="language-bash">
+# 切回主分支
+git checkout main
+
+# 合并功能分支
+git merge feature-login
+    </code></pre>
+    <p>合并后建议删除功能分支，保持仓库整洁。</p>
+
+    <h2>解决冲突</h2>
+    <p>当两个分支修改了同一文件的同一位置时，合并时会产生冲突，Git 会标记冲突区域：</p>
+    <pre><code>
+<<<<<<< HEAD
+这是主分支的内容
+=======
+这是功能分支的内容
+>>>>>>> feature-login
+    </code></pre>
+    <p>手动修改为需要的内容后，再提交一次：</p>
+    <pre><code class="language-bash">
+git add 文件名
+git commit -m "解决合并冲突"
+    </code></pre>
+
+    <h2>多人协作推荐流程</h2>
+    <ol>
+      <li>从主分支 <code>main</code> 拉取最新代码。</li>
+      <li>基于最新代码新建一个功能分支。</li>
+      <li>在功能分支上开发并提交。</li>
+      <li>推送功能分支到远程，并发起 Pull Request (PR)。</li>
+      <li>代码审查通过后，合并到主分支。</li>
+    </ol>
+
+    <h2>Rebase 与 Merge</h2>
+    <p><strong>Merge</strong>：直接把分支合并，保留分支历史，日志可能较复杂。</p>
+    <p><strong>Rebase</strong>：把你的提交“平移”到主分支的最新提交之后，保持历史更整洁。</p>
+    <pre><code class="language-bash">
+# 将功能分支基于 main 分支最新提交
+git checkout feature-login
+git rebase main
+    </code></pre>
+
+    <h2>总结</h2>
+    <p>通过学习分支和协作，你可以：</p>
+    <ul>
+      <li>独立开发新功能而不影响主分支</li>
+      <li>用分支隔离不同任务</li>
+      <li>通过合并或 rebase 保持代码历史清晰</li>
+      <li>利用 PR 流程提升团队协作效率</li>
+    </ul>
+    <p>这是成为 <strong>Git 高级用户</strong> 的必经之路 🚀</p>
+  </div>
+</div>
+
+
 
 <!-- 新文章 -->
 <div class="post"
