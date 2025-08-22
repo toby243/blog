@@ -187,7 +187,7 @@
 <div class="post"
      data-id="blog-success"
      data-title="博客搭建大成功！"
-     data-date="2025-08-22"
+     data-date="2025-08-20"
      data-category="心得"
      data-tags="博客,成功,记录"
      data-cover="https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1600&auto=format&fit=crop"
@@ -377,6 +377,164 @@ git rebase main
       <li>利用 PR 流程提升团队协作效率</li>
     </ul>
     <p>这是成为 <strong>Git 高级用户</strong> 的必经之路 🚀</p>
+  </div>
+</div>
+<div class="post"
+     data-id="git-practice"
+     data-title="Git 实战案例：从初始化到协作开发"
+     data-date="2025-08-22"
+     data-category="技术笔记"
+     data-tags="Git,GitHub,协作,案例,Pull Request"
+     data-cover="https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1600&auto=format&fit=crop"
+     data-excerpt="通过一个完整案例，演示团队如何使用 Git 和 GitHub 从初始化到 Pull Request 协作开发。">
+  <div class="content">
+    <h2>项目背景</h2>
+    <p>假设我们要开发一个简单的网站项目，团队有三个人：小明、Alice 和 Bob。目标是使用 Git 和 GitHub 进行高效协作。</p>
+
+    <h2>步骤一：初始化仓库</h2>
+    <pre><code class="language-bash">
+# 在本地创建文件夹并进入
+mkdir my-website && cd my-website
+
+# 初始化 Git 仓库
+git init
+
+# 创建一个 README 文件
+echo "# My Website" > README.md
+
+# 提交初始版本
+git add README.md
+git commit -m "初始化项目"
+    </code></pre>
+
+    <p>然后在 GitHub 创建一个远程仓库 <code>my-website</code>，把本地仓库推送上去：</p>
+    <pre><code class="language-bash">
+git remote add origin https://github.com/username/my-website.git
+git branch -M main
+git push -u origin main
+    </code></pre>
+
+    <h2>步骤二：成员克隆仓库</h2>
+    <p>Alice 和 Bob 使用 <code>git clone</code> 把仓库拉到本地：</p>
+    <pre><code class="language-bash">
+git clone https://github.com/username/my-website.git
+    </code></pre>
+
+    <h2>步骤三：开发新功能</h2>
+    <p>小明负责写首页，于是新建一个分支：</p>
+    <pre><code class="language-bash">
+git checkout -b feature-homepage
+echo "<h1>欢迎来到我的网站</h1>" > index.html
+git add index.html
+git commit -m "添加首页"
+git push -u origin feature-homepage
+    </code></pre>
+
+    <p>在 GitHub 上就能看到 <code>feature-homepage</code> 分支。</p>
+
+    <h2>步骤四：发起 Pull Request (PR)</h2>
+    <ol>
+      <li>小明进入 GitHub 仓库，点击 <code>Compare & pull request</code>。</li>
+      <li>填写描述，发起 PR 请求。</li>
+      <li>Alice 和 Bob 进行代码审查，确认没有问题后点击 <code>Merge</code>。</li>
+    </ol>
+
+    <h2>步骤五：更新本地主分支</h2>
+    <p>合并完成后，Alice 和 Bob 要同步最新代码：</p>
+    <pre><code class="language-bash">
+git checkout main
+git pull origin main
+    </code></pre>
+
+    <h2>步骤六：解决冲突</h2>
+    <p>如果 Alice 同时修改了 <code>index.html</code>，合并时可能出现冲突。解决方式：</p>
+    <ol>
+      <li>打开冲突文件，手动修改冲突区域。</li>
+      <li>保存后执行 <code>git add</code>。</li>
+      <li>再执行 <code>git commit</code> 完成冲突解决。</li>
+    </ol>
+
+    <h2>最终成果</h2>
+    <p>通过这个流程，团队实现了：</p>
+    <ul>
+      <li>使用分支隔离不同功能开发</li>
+      <li>通过 PR 进行代码审查与合并</li>
+      <li>保持主分支稳定</li>
+      <li>及时同步和解决冲突</li>
+    </ul>
+
+    <h2>总结</h2>
+    <p>这是一个最常见的 Git 协作流程：<strong>初始化 → 分支开发 → 提交 PR → 审查合并 → 更新主分支</strong>。熟悉后，你就能和团队高效协作啦 🚀。</p>
+  </div>
+</div>
+<div class="post"
+     data-id="git-faq"
+     data-title="Git 常见问题（FAQ）与最佳实践"
+     data-date="2025-08-22"
+     data-category="技术笔记"
+     data-tags="Git,FAQ,最佳实践,GitHub"
+     data-cover="https://images.unsplash.com/photo-1526378722484-bd91ca387e72?q=80&w=1600&auto=format&fit=crop"
+     data-excerpt="总结 Git 使用过程中常见的问题与解决办法，并给出最佳实践建议。">
+  <div class="content">
+    <h2>常见问题 FAQ</h2>
+
+    <h3>Q1: 忘记提交代码就切换分支怎么办？</h3>
+    <p>可以用 <code>git stash</code> 临时保存工作区：</p>
+    <pre><code class="language-bash">
+git stash
+git checkout new-branch
+git stash pop
+    </code></pre>
+
+    <h3>Q2: 不小心提交了错误的文件怎么办？</h3>
+    <p>可以使用 <code>git reset</code> 撤销：</p>
+    <pre><code class="language-bash">
+# 撤销暂存区的文件
+git reset HEAD filename
+
+# 回退到上一个提交
+git reset --hard HEAD~1
+    </code></pre>
+
+    <h3>Q3: Git 提交信息写错了怎么办？</h3>
+    <p>如果只是最后一次提交，可以修改提交信息：</p>
+    <pre><code class="language-bash">
+git commit --amend -m "新的提交信息"
+    </code></pre>
+    <p><strong>注意</strong>：如果已经推送到远程仓库，请谨慎修改，以免影响其他人。</p>
+
+    <h3>Q4: 如何回滚到某个历史版本？</h3>
+    <pre><code class="language-bash">
+# 查看提交记录
+git log
+
+# 回到指定提交
+git checkout <commit-id>
+    </code></pre>
+
+    <h3>Q5: GitHub 上分支太多怎么清理？</h3>
+    <p>删除本地分支：</p>
+    <pre><code class="language-bash">
+git branch -d branch-name
+    </code></pre>
+    <p>删除远程分支：</p>
+    <pre><code class="language-bash">
+git push origin --delete branch-name
+    </code></pre>
+
+    <h2>最佳实践</h2>
+    <ul>
+      <li><strong>使用分支</strong>：主分支保持稳定，新功能在 <code>feature-xxx</code> 分支开发。</li>
+      <li><strong>提交小而清晰</strong>：一次提交只做一件事，便于回滚和追踪。</li>
+      <li><strong>写有意义的提交信息</strong>：避免 "fix" 这种模糊的描述。</li>
+      <li><strong>定期同步远程分支</strong>：避免冲突堆积，保持本地最新。</li>
+      <li><strong>合并用 PR</strong>：不要直接推送到 <code>main</code>，通过 Pull Request 审查代码。</li>
+      <li><strong>使用 .gitignore</strong>：避免上传临时文件、日志、编译产物。</li>
+      <li><strong>定期清理分支</strong>：功能合并后删除分支，保持仓库整洁。</li>
+    </ul>
+
+    <h2>总结</h2>
+    <p>Git 功能很强大，常见问题也容易解决。掌握以上 FAQ 和最佳实践，你就能更加顺畅地管理代码、与团队协作 🚀。</p>
   </div>
 </div>
 
