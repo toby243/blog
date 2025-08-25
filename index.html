@@ -147,8 +147,9 @@
       </div>
     </div>
   </header>
-
-  <!-- 导航：搜索、分类、主题按钮 -->
+<div>
+	<p>，，下面是文章<p>
+</div>
   <div class="nav" id="main">
     <div class="nav-bar">
       <div class="search">
@@ -162,6 +163,69 @@
       </div>
     </div>
   </div>
+  <!-- 停留时间计时器 -->
+  <div class="widget">
+    <h2>⏳ 你的阅读时间</h2>
+    <p id="stayTime">你刚刚进入本站...</p>
+  </div>
+
+  <!-- 访客设备检测 -->
+  <div class="widget">
+    <h2>💻 你的访问信息</h2>
+    <p id="deviceInfo">检测中...</p>
+  </div>
+
+  <!-- 访问成就系统 -->
+  <div class="widget">
+    <h2>🏆 访问成就</h2>
+    <p>你已经访问本站 <span id="visitCount">0</span> 次</p>
+    <p>解锁称号：<span id="achievements">暂无</span></p>
+  </div>
+
+  <script>
+    // ========== 1. 停留时间计时器 ==========
+    let seconds = 0;
+    setInterval(() => {
+      seconds++;
+      let m = Math.floor(seconds / 60);
+      let s = seconds % 60;
+      document.getElementById("stayTime").innerText = 
+        `你已经在本站停留 ${m} 分 ${s} 秒`;
+    }, 1000);
+
+    // ========== 2. 设备检测 ==========
+    function detectDevice() {
+      let ua = navigator.userAgent;
+      let device = "未知设备";
+      if (/mobile/i.test(ua)) device = "手机";
+      else device = "电脑";
+      let browser = "未知浏览器";
+      if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
+      else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+      else if (ua.indexOf("Safari") !== -1) browser = "Safari";
+      else if (ua.indexOf("Edge") !== -1) browser = "Edge";
+      document.getElementById("deviceInfo").innerText = 
+        `你正在使用 ${device}，浏览器：${browser}`;
+    }
+    detectDevice();
+
+    // ========== 3. 访问成就系统 ==========
+    let visits = localStorage.getItem("visitCount") || 0;
+    visits++;
+    localStorage.setItem("visitCount", visits);
+    document.getElementById("visitCount").innerText = visits;
+
+    // 成就判断
+    let achievementText = "暂无";
+    if (visits >= 1 && visits < 5) achievementText = "新朋友 🌱";
+    else if (visits >= 5 && visits < 10) achievementText = "常客 👏";
+    else if (visits >= 10 && visits < 20) achievementText = "铁杆粉丝 🔥";
+    else if (visits >= 20 && visits < 50) achievementText = "超级支持者 💎";
+    else if (visits >= 50) achievementText = "传奇读者 👑";
+
+    document.getElementById("achievements").innerText = achievementText;
+  </script>
+
 
   <!-- 卡片网格渲染区 -->
   <main class="wrap">
